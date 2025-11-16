@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}Gerenciar Usuários{% endblock %}
+
+{% block content %}
+<div class="page-container">
+
+  <div class="pedido-card">
+    <h2 class="admin-title" style="text-align:center;">👤 Gerenciar Usuários</h2>
+
+    <div class="table-wrapper">
+      <table class="table-admin">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nome</th>
+            <th>Email</th>
+            <th>Telefone</th>
+            <th>Data Cadastro</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {% for u in usuarios %}
+          <tr>
+            <td>{{ u.id }}</td>
+            <td>{{ u.nome }}</td>
+            <td>{{ u.email }}</td>
+            <td>{{ u.telefone or "—" }}</td>
+
+            <td>
+                {% if u.data_cadastro %}
+                    {{ u.data_cadastro.strftime("%d/%m/%Y %H:%M") }}
+                {% else %}
+                    —
+                {% endif %}
+            </td>
+
+            <td style="white-space:nowrap;">
+
+              <!-- Botão Editar -->
+              <a href="{{ url_for('admin_editar_usuario', user_id=u.id) }}"
+                 class="btn-small"
+                 style="margin-right:6px;">
+                ✏ Editar
+              </a>
+
+              <!-- Botão Excluir -->
+              <form action="{{ url_for('admin_deletar_usuario', id=u.id) }}"
+                    method="POST"
+                    style="display:inline;"
+                    onsubmit="return confirm('Excluir o usuário {{ u.nome }}?');">
+                <button class="btn-small btn-danger">🗑 Excluir</button>
+              </form>
+
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

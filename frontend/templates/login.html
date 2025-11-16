@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Entrar - Cupcake Gourmet{% endblock %}
+
+{% block content %}
+<div class="page-container">
+
+  <div class="pedido-card" style="max-width:420px; margin:auto;">
+
+    <h2 style="text-align:center; margin-bottom:18px;">🔐 Acessar Conta</h2>
+
+    <form action="{{ url_for('login') }}" method="POST">
+
+      <div class="form-group">
+        <label>E-mail</label>
+        <input type="email" name="email" placeholder="seu@email.com" required>
+      </div>
+
+      <div class="form-group">
+        <label>Senha</label>
+        <input type="password" name="senha" placeholder="Digite sua senha" required>
+      </div>
+
+      <button type="submit" class="btn-primary" style="width:100%">Entrar</button>
+    </form>
+
+    <!-- 🔑 Link Esqueci minha senha -->
+    <p style="text-align:center; margin-top:10px;">
+      <a href="{{ url_for('esqueci_senha') }}"
+         target="_blank"
+         style="color:#8d3070; text-decoration:none; font-weight:500;">
+        🔑 Esqueci minha senha
+      </a>
+    </p>
+
+    <div style="text-align:center; margin-top:14px;">
+      <span>Não tem uma conta?</span>
+      <a href="{{ url_for('cadastro') }}" class="link-primary">Criar agora</a>
+    </div>
+
+  </div>
+
+</div>
+{% endblock %}

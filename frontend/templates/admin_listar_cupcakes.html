@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+{% block title %}Gerenciar Cupcakes{% endblock %}
+
+{% block content %}
+<div class="page-container">
+
+  <div class="pedido-card">
+    <h2 class="admin-title" style="text-align:center;">🧁 Gerenciar Cupcakes</h2>
+
+    <div class="text-end" style="margin-bottom:20px;">
+      <a href="{{ url_for('admin_cadastro_cupcake') }}" class="btn-primary">
+        ➕ Novo Cupcake
+      </a>
+    </div>
+
+    <div class="table-wrapper">
+      <table class="table-admin">
+        <thead>
+          <tr>
+            <th>Imagem</th>
+            <th>Nome</th>
+            <th>Descrição</th>
+            <th>Preço</th>
+            <th>Avaliação</th>
+            <th>Status</th>
+            <th style="width:140px; text-align:center;">Pedidos</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {% for c in cupcakes %}
+          {% set media = medias.get(c.id, 0) %}
+          {% set estrelas = media|round(0, 'floor') %}
+
+          <tr>
+
+            <!-- Imagem -->
+            <td>
+              {% if c.imagem_url %}
+                <img src="{{ url_for('static', filename='img/' ~ c.imagem_url) }}"
+                     alt="{{ c.nome }}"
+                     style="width:70px; height:70px; object-fit:cover; border-radius:6px;">
+              {% else %}
+                <img src="{{ url_for('static', filename='img/default.jpg') }}"
+                     alt="Imagem padrão"
+                     style="width:70px; height:70px; object-fit:cover; border-radius:6px;">
+              {% endif %}
+            </td>
+
+            <!-- Nome -->
+            <td>{{ c.nome }}</td>
+
+            <!-- Descrição -->
+            <td>{{ c.descricao }}</td>
+
+            <!-- Preço -->
+            <td>R$ {{ "%.2f"|format(c.preco) }}</td>
+
+            <!-- Avaliação -->
+            <td style="font-size:18px;">
+              {% for i in range(1, 6) %}
+                {% if i <= estrelas %}
+                  ⭐
+                {% else %}
+                  ☆
+                {% endif %}
+              {% endfor %}
+              <span style="font-size:13px; color:#666; margin-left:4px;">
+                ({{ "%.1f"|format(media or 0) }})
+              </span>
+            </td>
+
+            <!-- Status -->
+            <td>
+              {% if c.id in vendidos_ids %}
+                <span style="color:#c00; font-weight:bold;">Já vendido</span><br>
+              {% else %}
+                <span style="color:#090;">Nunca vendido</span><br>
+              {% endif %}
+
+              {% if c.ativo %}
+                <span style="color:#06c;">Ativo</span>
+              {% else %}
+                <span style="color:#888;">Inativo</span>
+              {% endif %}
+            </td>
+
+            <!-- Botão de ver pedidos -->
+            <td style="text-align:center; white-space:nowrap;">
+              {% if c.id in vendidos_ids %}
+                <a href="{{ url_for('admin_pedidos_do_cupcake', cupcake_id=c.id) }}"
+                   class="btn-small btn-ver-pedidos"
+                   style="padding:10px 8px; font-size:12px; display:inline-block;">
+                  📦 Ver pedidos
+                </a>
+              {% else %}
+                <span style="color:#777; font-size:12px;">—</span>
+              {% endif %}
+            </td>
+
+            <!-- Ações -->
+          <td class="acoes-coluna">
+            <a href="{{ url_for('admin_editar_cupcake', id=c.id) }}" 
+                class="btn-edit-cupcake">
+                  ✏ Editar
+            </a>
+
+
+            <form action="{{ url_for('admin_deletar_cupcake', id=c.id) }}"
+                  method="POST"
+                  onsubmit="return confirm('Tem certeza que deseja excluir ou desativar este cupcake?');">
+                <button class="btn-small btn-danger btn-excluir">
+                    🗑 Excluir
+                </button>
+            </form>
+          </td>
+
+
+          </tr>
+
+          {% else %}
+          <tr>
+            <td colspan="8" style="text-align:center; color:#555;">
+              Nenhum cupcake cadastrado
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

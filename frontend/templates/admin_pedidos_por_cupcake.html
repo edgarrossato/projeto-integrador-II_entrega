@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Pedidos do Cupcake{% endblock %}
+
+{% block content %}
+
+<div class="page-container">
+    <div class="pedido-card" style="max-width:700px; margin:auto;">
+
+        <h2 style="text-align:center; margin-bottom:20px;">
+            🧁 Pedidos do Cupcake<br>
+            <strong>{{ cupcake.nome }}</strong>
+        </h2>
+
+        {% if pedidos %}
+            <table class="table-admin">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Data</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for pedido in pedidos %}
+                    <tr>
+                        <td>#{{ pedido.id }}</td>
+                        <td>{{ pedido.data_pedido.strftime("%d/%m/%Y %H:%M") }}</td>
+                        <td>{{ pedido.status }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p style="text-align:center; color:#777; padding:20px;">
+                Nenhum pedido contém este cupcake.
+            </p>
+        {% endif %}
+
+        <div style="text-align:center; margin-top:20px;">
+            <a href="{{ url_for('admin_listar_cupcakes') }}" class="btn-secondary">Voltar</a>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

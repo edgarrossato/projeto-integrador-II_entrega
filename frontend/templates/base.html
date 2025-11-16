@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Cupcake Gourmet{% endblock %}</title>
+
+    <!-- CSS padrão do site -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+    <!-- icone -->
+    <link rel="icon" href="{{ url_for('static', filename='img/favicon.ico') }}" type="image/x-icon">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico') }}" type="image/x-icon">
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='img/favicon.png') }}">
+
+
+    {% block head_extra %}{% endblock %}
+</head>
+<body>
+
+<header class="site-header">
+  <h1 class="logo">Cupcake Gourmet</h1>
+  <nav class="main-nav">
+    <a href="{{ url_for('vitrine') }}">Vitrine</a>
+    {% if session.get('usuario_id') %}
+      <a href="{{ url_for('home') }}">Home</a>
+      <a href="{{ url_for('pedido') }}">Meu Pedido</a>
+      <a href="{{ url_for('carrinho') }}">Carrinho</a>
+
+      {% if session.get('is_admin') %}
+      <div class="dropdown">
+        <button class="dropbtn">⚙ Administração ▾</button>
+        <div class="dropdown-content">
+          <a href="{{ url_for('admin_dashboard') }}">📦 Pedidos</a>
+          <a href="{{ url_for('admin_listar_cupcakes') }}">🧁 Cupcakes</a>
+          <a href="{{ url_for('admin_usuarios') }}">👤 Usuários</a>
+        </div>
+      </div>
+      {% endif %}
+      <a href="{{ url_for('logout') }}" class="logout">Logout</a>
+    {% else %}
+      <a href="{{ url_for('login') }}">Login</a>
+      <a href="{{ url_for('cadastro') }}">Cadastro</a>
+    {% endif %}
+  </nav>
+</header>
+
+
+<!--  -->
+<main>
+    <div class="page-container">
+
+        {% with mensagens = get_flashed_messages(with_categories=true) %}
+            {% if mensagens %}
+                {% for categoria, mensagem in mensagens %}
+                    <div class="flash {{ categoria }}">{{ mensagem }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+
+    </div>
+</main>
+
+<footer style="text-align:center; padding:20px 0; margin-top:30px;">
+
+    <a href="{{ url_for('fale_conosco') }}"
+       target="_blank"
+       class="btn-primary"
+       style="padding:10px 20px; display:inline-block; margin-bottom:10px;">
+        💬 Fale Conosco
+    </a>
+
+    <p style="margin-top:5px; font-size:14px; color:#777;">
+        © {{ current_year }} Cupcake Gourmet. Todos os direitos reservados.
+    </p>
+
+</footer>
+
+
+<!-- JS padrão do site -->
+<script src="{{ url_for('static', filename='js/base.js') }}"></script>
+
+<!-- Páginas podem adicionar scripts extras -->
+{% block scripts %}{% endblock %}
+
+</body>
+</html>

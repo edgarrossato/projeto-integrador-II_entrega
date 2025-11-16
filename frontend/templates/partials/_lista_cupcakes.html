@@ -1,0 +1,24 @@
+<div class="vitrine">
+  {% for cupcake in cupcakes %}
+    <div class="cupcake-card">
+
+      <img src="{{ url_for('static', filename='img/' ~ cupcake.imagem_url) }}"
+           alt="{{ cupcake.nome }}" class="cupcake-img">
+
+      <h3>{{ cupcake.nome }}</h3>
+      <p>{{ cupcake.descricao }}</p>
+      <p><strong>R$ {{ "%.2f"|format(cupcake.preco) }}</strong></p>
+
+      <form action="{{ url_for('adicionar_ao_carrinho', cupcake_id=cupcake.id) }}" method="POST">
+        <button class="btn-primary">Adicionar</button>
+      </form>
+
+    </div>
+  {% endfor %}
+
+  {% if not cupcakes %}
+    <p style="text-align:center; color:#666; width:100%;">
+      Nenhum cupcake encontrado.
+    </p>
+  {% endif %}
+</div>

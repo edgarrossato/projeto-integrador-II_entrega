@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}Editar Cupcake{% endblock %}
+
+{% block content %}
+<div class="page-container admin-form-page">
+
+  <header class="admin-header" style="text-align:center; margin-bottom:25px;">
+    <h1 class="admin-title">✏ Editar Cupcake</h1>
+  </header>
+
+  <div class="pedido-card">
+
+    <form class="admin-form" method="POST" enctype="multipart/form-data">
+
+      <div class="form-row">
+        <div>
+          <label>Nome</label>
+          <input type="text" name="nome" value="{{ cupcake.nome }}" required>
+        </div>
+
+        <div>
+          <label>Preço (R$)</label>
+          <input type="number" step="0.01" name="preco" value="{{ cupcake.preco }}" required>
+        </div>
+      </div>
+
+      <label>Descrição</label>
+      <textarea name="descricao" rows="3" required>{{ cupcake.descricao }}</textarea>
+
+      <!-- Checkbox de status -->
+      <div style="margin:15px 0;">
+        <label style="font-weight:bold;">Status do Cupcake</label>
+        <div style="margin-top:8px;">
+          <input type="checkbox" name="ativo" id="ativoCheckbox"
+                 {% if cupcake.ativo %}checked{% endif %}>
+          <label for="ativoCheckbox" style="margin-left:6px;">Cupcake ativo</label>
+        </div>
+      </div>
+
+      <label>Imagem Atual</label>
+      <div style="margin:10px 0; text-align:center;">
+        <img src="{{ url_for('static', filename='img/' ~ cupcake.imagem_url) }}" 
+             alt="Imagem atual do cupcake"
+             class="preview-img">
+      </div>
+
+      <label>Nova Imagem (opcional)</label>
+      <input type="file" name="imagem" id="imgInput" accept="image/*">
+
+      <!-- Preview da nova imagem -->
+      <div style="margin:10px 0; text-align:center;">
+        <img id="imgPreview" src="" class="preview-img" style="display:none;">
+      </div>
+
+      <div class="form-actions" style="margin-top:20px;">
+        <button type="submit" class="btn-primary">💾 Salvar Alterações</button>
+        <a href="{{ url_for('admin_listar_cupcakes') }}" class="btn-secondary">❌ Cancelar</a>
+      </div>
+
+    </form>
+
+  </div>
+</div>
+
+<script>
+  // ▸ Preview da nova imagem
+  document.getElementById("imgInput").addEventListener("change", e => {
+    const img = document.getElementById("imgPreview");
+    const file = e.target.files[0];
+    if (file) {
+      img.style.display = "block";
+      img.src = URL.createObjectURL(file);
+    }
+  });
+</script>
+
+{% endblock %}

@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+{% block title %}Meus Pedidos{% endblock %}
+
+{% block content %}
+
+{% if session.get("whatsapp_url") %}
+    <script>
+        const whatsappURL = "{{ session.get('whatsapp_url') }}";
+        window.onload = function() {
+            window.open(whatsappURL, "_blank");
+        };
+    </script>
+
+    {# Após abrir o WhatsApp, limpa a sessão #}
+    {% set _ = session.pop('whatsapp_url') %}
+{% endif %}
+
+
+<div class="page-container">
+  <div class="pedido-card">
+    <h2 class="admin-title" style="text-align:center;">📦 Meus Pedidos</h2>
+
+    {% if historico %}
+      {% for pedido in historico %}
+      <div class="pedido-box">
+
+        <!-- Cabeçalho -->
+        <h3>Pedido #{{ pedido.pedido_id }}</h3>
+        <p class="pedido-data">📅 {{ pedido.data.strftime("%d/%m/%Y %H:%M") }}</p>
+
+        <!-- Linha do tempo -->
+        <div class="status-timeline">
+          {% set etapas = [
+            ('Recebido', '📥'),
+            ('Em produção', '👩‍🍳'),
+            ('Pronto', '✅'),
+            ('Entregue', '📦')
+          ] %}
+
+          {% set nomes = etapas | map(attribute=0) | list %}
+          {% set atual = nomes.index(pedido.status) if pedido.status in nomes else 0 %}
+
+          {% for nome, icone in etapas %}
+          <div class="status-step {% if loop.index0 == atual %}ativo{% elif loop.index0 < atual %}completo{% endif %}">
+            <div class="status-icon">{{ icone }}</div>
+            <div class="status-label">{{ nome }}</div>
+          </div>
+          {% endfor %}
+        </div>
+
+        <!-- Itens -->
+        <table class="pedido-tabela">
+          <thead>
+            <tr>
+              <th>Item</th>
+              <th>Qtd</th>
+              <th>Unitário</th>
+              <th>Subtotal</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in pedido.itens %}
+            <tr>
+              <td>{{ item.cupcake.nome }}</td>
+              <td>{{ item.quantidade }}</td>
+              <td>R$ {{ "%.2f"|format(item.cupcake.preco) }}</td>
+              <td><strong>R$ {{ "%.2f"|format(item.subtotal) }}</strong></td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+        <!-- Total -->
+        <p class="total">
+          Total: <strong>R$ {{ "%.2f"|format(pedido.total) }}</strong>
+        </p>
+
+        <!-- ⭐ Avaliação -->
+        {% if pedido.status == "Entregue" %}
+          <div style="margin-top:15px;">
+
+            {% if pedido.avaliacao %}
+              <!-- Já avaliado -->
+              <p><strong>Avaliação enviada:</strong></p>
+              <div style="font-size:26px; color:#f7c325;">
+                {% for i in range(1,6) %}
+                  {% if i <= pedido.avaliacao %}★{% else %}☆{% endif %}
+                {% endfor %}
+              </div>
+
+            {% else %}
+              <!-- Formulário de avaliação -->
+              <p><strong>Avaliar este pedido:</strong></p>
+
+              <form action="{{ url_for('avaliar_pedido', pedido_id=pedido.pedido_id) }}" method="POST">
+
+                <div class="star-rating" style="font-size:30px; color:#f7c325; cursor:pointer;">
+                  {% for i in range(1,6) %}
+                  <label>
+                    <input type="radio" name="avaliacao" value="{{ i }}" required style="display:none;">
+                    <span class="star">☆</span>
+                  </label>
+                  {% endfor %}
+                </div>
+
+                <button type="submit" class="btn-primary" style="margin-top:10px;">
+                  Enviar Avaliação
+                </button>
+              </form>
+
+              <script>
+                document.querySelectorAll(".star-rating label").forEach((label, index) => {
+                  label.addEventListener("click", function () {
+                    const stars = document.querySelectorAll(".star-rating .star");
+                    stars.forEach(star => star.textContent = "☆");
+                    for (let i = 0; i <= index; i++) {
+                      stars[i].textContent = "★";
+                    }
+                  });
+                });
+              </script>
+
+            {% endif %}
+          </div>
+        {% endif %}
+
+        <!-- Botões -->
+        <div class="pedido-botoes" style="margin-top:15px;">
+          <a href="{{ url_for('repetir_pedido', pedido_id=pedido.pedido_id) }}" class="btn-primary">
+            🔄 Repetir Pedido
+          </a>
+
+          <a href="{{ url_for('pedido_pdf', pedido_id=pedido.pedido_id) }}" target="_blank" class="btn-danger">
+            📄 Download PDF
+          </a>
+        </div>
+
+      </div>
+      {% endfor %}
+    
+    {% else %}
+      <p style="text-align:center; color:#777;">Você ainda não fez nenhum pedido.</p>
+    {% endif %}
+
+  </div>
+</div>
+{% endblock %}

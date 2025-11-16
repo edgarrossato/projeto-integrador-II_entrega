@@ -1,0 +1,196 @@
+/* ==========================
+   ADMIN DASHBOARD LAYOUT
+========================== */
+.admin-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.admin-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.admin-title {
+  color: #c14b6e;
+  font-size: 26px;
+  margin-bottom: 10px;
+}
+
+/* ==========================
+   MÉTRICAS E GRÁFICOS
+========================== */
+.top-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 25px;
+  margin-bottom: 25px;
+}
+
+.metrics-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.metric-card {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  padding: 15px;
+  text-align: center;
+}
+
+.metric-card h4 {
+  color: #777;
+  margin-bottom: 5px;
+  font-weight: 500;
+}
+
+.metric-value {
+  font-size: 22px;
+  font-weight: bold;
+  color: #c14b6e;
+}
+
+.chart-card {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  padding: 15px;
+  text-align: center;
+}
+
+/* ==========================
+   FILTROS E EXPORTAÇÕES
+========================== */
+.filters-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-end;
+  background: #fff;
+  border-radius: 10px;
+  padding: 15px 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  margin-bottom: 25px;
+}
+
+.filter-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.filter-group label {
+  display: block;
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 4px;
+}
+
+.filter-group input,
+.filter-group select {
+  min-width: 150px;
+  height: 35px;
+  border-radius: 6px;
+}
+
+.filter-actions {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.export-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-export {
+  padding: 8px 16px;
+  border-radius: 6px;
+  color: #fff;
+  text-decoration: none;
+  font-size: 14px;
+  transition: background 0.3s;
+}
+
+.btn-export.excel {
+  background-color: #1cc88a;
+}
+
+.btn-export.excel:hover {
+  background-color: #17a673;
+}
+
+.btn-export.pdf {
+  background-color: #4e73df;
+}
+
+.btn-export.pdf:hover {
+  background-color: #3d5cb8;
+}
+
+/* ==========================
+   TABELA ADMIN (refino)
+========================== */
+.table-section {
+  background: #fff;
+  border-radius: 10px;
+  padding: 15px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.table-admin th {
+  text-transform: uppercase;
+  font-size: 13px;
+  letter-spacing: 0.5px;
+}
+
+.table-admin td ul.small-list {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.actions-cell {
+  white-space: nowrap;
+}
+
+/* ==========================
+   PAGINAÇÃO
+========================== */
+.pagination {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.pagination a {
+  display: inline-block;
+  padding: 6px 12px;
+  margin: 2px;
+  border-radius: 5px;
+  background-color: #eee;
+  text-decoration: none;
+  color: #333;
+}
+
+.pagination a.btn-primary {
+  background-color: #c14b6e;
+  color: #fff;
+}
+
+/* ==========================
+   RESPONSIVIDADE
+========================== */
+@media (max-width: 900px) {
+  .top-row {
+    grid-template-columns: 1fr;
+  }
+  .filters-row {
+    flex-direction: column;
+    gap: 15px;
+  }
+}

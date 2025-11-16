@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Editar Perfil{% endblock %}
+
+{% block content %}
+<div class="page-container">
+
+  <div class="pedido-card" style="max-width:480px; margin:auto;">
+
+    <h2 class="admin-title" style="text-align:center;">✏ Editar Perfil</h2>
+
+    <form method="POST">
+
+      <div class="form-group">
+        <label>Nome</label>
+        <input type="text" name="nome" value="{{ usuario.nome }}" required>
+      </div>
+
+      <div class="form-group">
+        <label>E-mail</label>
+        <input type="email" name="email" value="{{ usuario.email }}" required>
+      </div>
+
+      <div class="form-group">
+        <label>Telefone</label>
+        <input type="text" name="telefone" id="telefone"
+               value="{{ usuario.telefone or '' }}" placeholder="(11) 99999-9999">
+      </div>
+
+      <div class="form-group">
+        <label>Nova Senha (opcional)</label>
+        <input type="password" name="senha" placeholder="Deixe em branco para não alterar">
+      </div>
+
+      <button class="btn-primary" style="width:100%; margin-top:10px;">
+        💾 Salvar Alterações
+      </button>
+
+    </form>
+
+    <div style="text-align:center; margin-top:10px;">
+      <a href="{{ url_for('home') }}" class="btn-secondary">⬅ Voltar</a>
+    </div>
+
+  </div>
+</div>
+
+<!-- 🔢 Máscara automática de telefone -->
+<script>
+document.getElementById("telefone").addEventListener("input", function (e) {
+    let v = e.target.value.replace(/\D/g, "");
+    if (v.length > 10) {
+        e.target.value = v.replace(/(\d{2})(\d{5})(\d{4}).*/, "($1) $2-$3");
+    } else {
+        e.target.value = v.replace(/(\d{2})(\d{4})(\d{0,4}).*/, "($1) $2-$3");
+    }
+});
+</script>
+
+{% endblock %}

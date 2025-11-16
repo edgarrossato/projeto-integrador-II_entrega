@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block title %}Carrinho de Compras{% endblock %}
+
+{% block content %}
+<div class="page-container">
+
+  <div class="pedido-card" style="max-width:900px;">
+
+    <h2 class="admin-title" style="text-align:center;">🛒 Meu Carrinho</h2>
+
+    {% if itens %}
+
+      <div class="vitrine" style="margin-top:15px;">
+        {% for item in itens %}
+        {% set cupcake = item.cupcake %}
+
+        <div class="cupcake-card">
+          {% if cupcake.imagem_url %}
+            <img src="{{ url_for('static', filename='img/' ~ cupcake.imagem_url) }}" 
+                 alt="{{ cupcake.nome }}" class="cupcake-img">
+          {% else %}
+            <img src="{{ url_for('static', filename='img/default.jpg') }}" 
+                 alt="Imagem padrão" class="cupcake-img">
+          {% endif %}
+
+          <h3>{{ cupcake.nome }}</h3>
+          <p>{{ cupcake.descricao }}</p>
+          <p class="price"><strong>R$ {{ "%.2f"|format(cupcake.preco) }}</strong></p>
+
+          
+          <div class="qty-controls cart-qty"> 
+
+            <form action="{{ url_for('diminuir_quantidade', cupcake_id=cupcake.id) }}" method="POST">
+              <button class="qty-btn">−</button>
+            </form> 
+
+           
+            <input class="cart-qty-input" value="{{ item.quantidade }}" readonly> 
+
+            <form action="{{ url_for('aumentar_quantidade', cupcake_id=cupcake.id) }}" method="POST">
+              <button class="qty-btn">+</button>
+            </form>
+
+          </div>
+
+          <form action="{{ url_for('remover_do_carrinho', cupcake_id=cupcake.id) }}" method="POST">
+            <button class="btn-remove">🗑 Remover</button>
+          </form>
+
+          <small class="subtotal">Subtotal: R$ {{ "%.2f"|format(item.subtotal) }}</small>
+        </div>
+
+        {% endfor %}
+      </div>
+
+      <div class="cart-summary" style="text-align:center; margin-top:22px;">
+        <h3>Total: <span class="total-value">R$ {{ "%.2f"|format(total) }}</span></h3>
+      </div>
+
+      <div style="text-align:center; margin-top:15px;">
+        <form action="{{ url_for('finalizar_pedido') }}" method="POST">
+          <button class="btn-primary" style="padding:12px 24px; font-size:16px;">
+            ✅ Finalizar Pedido
+          </button>
+        </form>
+      </div>
+
+    {% else %}
+      <div style="text-align:center; margin:40px 0;">
+        <p style="font-size:16px; color:#666;">Seu carrinho está vazio 😢</p>
+        <a href="{{ url_for('vitrine') }}" class="btn-secondary">🧁 Ver Vitrine</a>
+      </div>
+    {% endif %}
+
+  </div>
+</div>
+
+{% endblock %}

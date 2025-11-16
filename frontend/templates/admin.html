@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+{% block title %}Painel Administrativo{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+
+<div class="page-container admin-page">
+
+  <div class="pedido-card">
+
+    <header class="admin-header" style="text-align:center; margin-bottom:25px;">
+      <h2 class="admin-title">⚙ Painel Administrativo</h2>
+    </header>
+
+    <!-- Métricas -->
+    <section class="metrics-grid">
+      <div class="metric-card">
+        <h4>Total de Pedidos</h4>
+        <p class="metric-value">{{ total_pedidos }}</p>
+      </div>
+      <div class="metric-card">
+        <h4>Clientes</h4>
+        <p class="metric-value">{{ total_clientes }}</p>
+      </div>
+      <div class="metric-card">
+        <h4>Faturamento</h4>
+        <p class="metric-value">R$ {{ "%.2f"|format(total_faturado) }}</p>
+      </div>
+    </section>
+
+    <!-- Gráfico -->
+    <section class="chart-section">
+      <h3 style="text-align:center;">📊 Pedidos por Status</h3>
+      <canvas id="chartStatus" width="400" height="220" style="margin:auto; display:block;"></canvas>
+    </section>
+
+    <!-- Filtros -->
+    <section class="filters-row">
+      <form method="GET" action="{{ url_for('admin_dashboard') }}" class="filter-form">
+
+        <div class="filter-group">
+          <label>Status</label>
+          <select name="status">
+            <option value="" {% if not filtro_status %}selected{% endif %}>Todos</option>
+            <option value="Recebido" {% if filtro_status == "Recebido" %}selected{% endif %}>Recebido</option>
+            <option value="Em produção" {% if filtro_status == "Em produção" %}selected{% endif %}>Em produção</option>
+            <option value="Pronto" {% if filtro_status == "Pronto" %}selected{% endif %}>Pronto</option>
+            <option value="Entregue" {% if filtro_status == "Entregue" %}selected{% endif %}>Entregue</option>
+            <option value="Cancelado" {% if filtro_status == "Cancelado" %}selected{% endif %}>Cancelado</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label>De</label>
+          <input type="date" name="data_inicio" value="{{ data_inicio or '' }}">
+        </div>
+
+        <div class="filter-group">
+          <label>Até</label>
+          <input type="date" name="data_fim" value="{{ data_fim or '' }}">
+        </div>
+
+        <div class="filter-group">
+          <label>Cliente</label>
+          <input type="text" name="cliente" placeholder="Nome do cliente..." value="{{ filtro_cliente or '' }}">
+        </div>
+
+        <div class="filter-actions">
+          <button type="submit" class="btn-primary btn-small">Filtrar</button>
+          {% if filtro_status or data_inicio or data_fim or filtro_cliente %}
+            <a href="{{ url_for('admin_dashboard') }}" class="btn-secondary btn-small">Limpar</a>
+          {% endif %}
+        </div>
+      </form>
+
+      <div class="export-buttons">
+        <a href="{{ url_for('exportar_excel', status=filtro_status, data_inicio=data_inicio, data_fim=data_fim, cliente=filtro_cliente) }}" class="btn-export excel">📄 Excel</a>
+        <a href="{{ url_for('exportar_pdf', status=filtro_status, data_inicio=data_inicio, data_fim=data_fim, cliente=filtro_cliente) }}" class="btn-export pdf">🖨 PDF</a>
+      </div>
+    </section>
+
+    <!-- Tabela de pedidos -->
+    <section class="table-section">
+      <div class="table-wrapper">
+        <table class="table-admin">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Cliente</th>
+              <th>Status</th>
+              <th>Itens</th>
+              <th>Total (R$)</th>
+              <th>Data</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for pedido in pedidos %}
+            <tr>
+              <td>#{{ pedido.id }}</td>
+              <td>{{ pedido.usuario.nome }}</td>
+              <td>
+                <span class="status-badge status-{{ pedido.status|lower|replace(' ', '-') }}">
+                  {{ pedido.status }}
+                </span>
+              </td>
+              <td>
+                <ul class="small-list">
+                  {% for item in pedido.itens %}
+                    <li>{{ item.quantidade }}x {{ item.cupcake.nome if item.cupcake else 'Item removido' }}</li>
+                  {% endfor %}
+                </ul>
+              </td>
+              <td>R$ {{ "%.2f"|format(pedido.total or 0) }}</td>
+              <td>{{ pedido.data_pedido.strftime('%d/%m/%Y %H:%M') if pedido.data_pedido else '-' }}</td>
+              <td class="actions-cell">
+                <a href="{{ url_for('admin_pedido_detalhes', pedido_id=pedido.id) }}" class="btn-small">Detalhes</a>
+
+                <!--<form action="{{ url_for('alterar_status', pedido_id=pedido.id) }}" method="POST" style="display:inline;">
+                  <select name="status" class="combo-update-status">
+                    {% for s in ['Recebido','Em produção','Pronto','Entregue','Cancelado'] %}
+                      <option value="{{ s }}" {% if pedido.status == s %}selected{% endif %}>{{ s }}</option>
+                    {% endfor %}
+                  </select>
+                  <button class="btn-small">Atualizar</button>
+                </form>
+
+                <form action="{{ url_for('admin_pedido_delete', pedido_id=pedido.id) }}" method="POST"
+                      style="display:inline;"
+                      onsubmit="return confirm('Excluir pedido #{{ pedido.id }}?');">
+                  <button class="btn-small btn-danger">Excluir</button>
+                </form>-->
+              </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="7" class="empty">Nenhum pedido encontrado</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Paginação -->
+      {% if total_paginas > 1 %}
+      <div class="pagination">
+        {% for p in range(1, total_paginas + 1) %}
+          <a href="{{ url_for('admin_dashboard', page=p, status=filtro_status, data_inicio=data_inicio, data_fim=data_fim, cliente=filtro_cliente) }}"
+             class="btn-small {% if p == pagina %}btn-primary{% endif %}">
+            {{ p }}
+          </a>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </section>
+
+  </div>
+</div>
+
+<!-- Scripts -->
+<script>
+  const pedidosStats = JSON.parse(`{{ stats_status | tojson | safe }}`);
+</script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+
+{% endblock %}

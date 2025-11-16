@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Pedido Confirmado{% endblock %}
+
+{% block content %}
+<div class="page-container">
+  <div class="pedido-card" style="max-width:700px; margin:auto; text-align:center;">
+
+    <h2 style="margin-bottom:10px;">🎉 Pedido Confirmado!</h2>
+    <p>Seu pedido foi registrado com sucesso.</p>
+    <p><strong>Número do pedido:</strong> #{{ pedido.id }}</p>
+
+    <hr style="margin:20px 0;">
+
+    <h3>🧾 Itens do Pedido</h3>
+
+    <div style="margin-top:15px;">
+      <table style="width:100%; border-collapse:collapse; margin-top:10px;">
+        <thead>
+          <tr style="background:#f8f8f8;">
+            <th style="padding:8px;">Cupcake</th>
+            <th style="padding:8px;">Quantidade</th>
+            <th style="padding:8px;">Subtotal</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in pedido.itens %}
+          <tr style="border-bottom:1px solid #ddd;">
+            <td style="padding:8px;">{{ item.cupcake.nome }}</td>
+            <td style="padding:8px;">{{ item.quantidade }}</td>
+            <td style="padding:8px;">R$ {{ "%.2f"|format(item.cupcake.preco * item.quantidade) }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <h3 style="margin-top:20px;">Total: <strong>R$ {{ "%.2f"|format(total) }}</strong></h3>
+
+    <div style="margin-top:10px;">
+      <span class="status-badge status-{{ pedido.status|lower|replace(' ', '-') }}">
+        {{ pedido.status }}
+      </span>
+    </div>
+
+    <div style="margin-top:25px;">
+      <a href="{{ url_for('vitrine') }}" class="btn-primary" style="padding:10px 20px; margin-right:10px;">🧁 Voltar à Vitrine</a>
+      <a href="{{ url_for('pedido') }}" class="btn-secondary" style="padding:10px 20px;">📦 Meus Pedidos</a>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

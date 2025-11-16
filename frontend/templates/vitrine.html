@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Vitrine{% endblock %}
+
+{% block content %}
+
+<div class="page-container">
+
+  <div class="pedido-card" style="max-width:900px; margin:auto;">
+
+    <h2 class="admin-title" style="text-align:center;">🧁 Nossa Vitrine</h2>
+
+    <!-- Campo de busca -->
+    <div style="max-width:400px; margin:20px auto;">
+      <input 
+        type="text"
+        id="buscarCupcake"
+        placeholder="🔍 Buscar cupcake por nome..."
+        style="
+          width:100%;
+          padding:10px;
+          border:1px solid #8d3070;
+          border-radius:6px;
+          font-size:16px;
+        ">
+    </div>
+
+    <!-- Lista dinâmica de cupcakes -->
+    <div id="listaCupcakes">
+      {# Render inicial usando os cupcakes enviados na rota /vitrine #}
+      {% include 'partials/_lista_cupcakes.html' %}
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+  const inputBusca = document.getElementById("buscarCupcake");
+  const lista = document.getElementById("listaCupcakes");
+
+  inputBusca.addEventListener("keyup", function () {
+      const query = this.value;
+
+      fetch("/buscar_cupcakes?q=" + encodeURIComponent(query))
+          .then(response => response.text())
+          .then(html => {
+              lista.innerHTML = html;
+          })
+          .catch(err => {
+              console.error("Erro na busca de cupcakes:", err);
+          });
+  });
+</script>
+
+{% endblock %}

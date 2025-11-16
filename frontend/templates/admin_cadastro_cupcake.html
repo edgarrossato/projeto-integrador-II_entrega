@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Cadastrar Cupcake{% endblock %}
+
+{% block content %}
+<div class="page-container admin-form-page">
+
+  <header class="admin-header" style="text-align:center; margin-bottom:25px;">
+    <h1 class="admin-title">🧁 Cadastrar Novo Cupcake</h1>
+  </header>
+
+  <div class="pedido-card">
+
+    <form class="admin-form" method="POST" enctype="multipart/form-data">
+
+      <div class="form-row">
+        <div>
+          <label>Nome</label>
+          <input type="text" name="nome" placeholder="Ex: Red Velvet..." required>
+        </div>
+
+        <div>
+          <label>Preço (R$)</label>
+          <input type="number" step="1" min="1" name="preco" placeholder="Ex: 12.90" required>
+        </div>
+      </div>
+
+      <label>Descrição</label>
+      <textarea name="descricao" rows="3" placeholder="Descrição do cupcake..." required></textarea>
+
+      <label>Imagem</label>
+      <input type="file" name="imagem" id="imgInput" accept="image/*" required>
+
+      <!-- Preview da imagem -->
+      <div style="margin:10px 0; text-align:center;">
+        <img id="imgPreview" src="" class="preview-img" style="display:none;">
+      </div>
+
+      <div class="form-actions" style="margin-top:20px;">
+        <button type="submit" class="btn-primary">✅ Cadastrar</button>
+        <a href="{{ url_for('admin_listar_cupcakes') }}" class="btn-secondary">❌ Cancelar</a>
+      </div>
+
+    </form>
+
+  </div>
+</div>
+
+<script>
+  // ▸ Preview da imagem ao carregar
+  document.getElementById("imgInput").addEventListener("change", e => {
+    const img = document.getElementById("imgPreview");
+    const file = e.target.files[0];
+    if (file) {
+      img.style.display = "block";
+      img.src = URL.createObjectURL(file);
+    }
+  });
+</script>
+
+{% endblock %}

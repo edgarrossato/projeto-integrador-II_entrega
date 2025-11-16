@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Início{% endblock %}
+
+{% block content %}
+<div class="page-container">
+
+  <div class="pedido-card" style="text-align:center;">
+
+    <!-- Tirei o "max-width:700px;" -->
+    <h2 style="font-size:26px; margin-bottom:8px;">👋 Olá, {{ nome }}!</h2>
+    <p style="font-size:15px; color:#555; margin-bottom:25px;">
+      Bem-vindo(a) ao <strong>Cupcake Gourmet</strong> 🍰<br>
+      Faça seu pedido ou acompanhe seus cupcakes favoritos 💛
+    </p>
+
+    <div class="home-actions-grid">
+
+      <a href="{{ url_for('vitrine') }}" class="home-btn">
+        🧁 Ver Vitrine
+      </a>
+
+      <a href="{{ url_for('pedido') }}" class="home-btn">
+        📦 Meus Pedidos
+      </a>
+      <a href="{{ url_for('editar_perfil') }}" class="home-btn">
+        ✏ Perfil
+      </a>
+
+      <a href="{{ url_for('logout') }}" class="home-btn logout">
+        🚪 Sair
+      </a>
+
+    </div>
+
+  </div>
+
+</div>
+{% endblock %}

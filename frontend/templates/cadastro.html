@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block title %}Cadastro - Cupcake Gourmet{% endblock %}
+
+{% block content %}
+<div class="page-container">
+
+  <div class="pedido-card" style="max-width:420px; margin:auto;">
+
+    <h2 style="text-align:center; margin-bottom:18px;">🧁 Criar sua Conta</h2>
+
+    <form action="{{ url_for('cadastrar') }}" method="POST">
+
+      <div class="form-group">
+        <label>Nome</label>
+        <input type="text" name="nome" placeholder="Seu nome completo" required>
+      </div>
+
+      <div class="form-group">
+        <label>E-mail</label>
+        <input type="email" name="email" placeholder="seu@email.com" required>
+      </div>
+
+      <div class="form-group">
+        <label>Telefone</label>
+        <input type="text" name="telefone" id="telefone" placeholder="(11) 99999-9999" required>
+      </div>
+
+
+      <div class="form-group">
+          <label>Senha</label>
+          <input type="password"
+                name="senha"
+                placeholder="Crie uma senha segura"
+                required
+                minlength="8"
+                pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$"
+                title="A senha deve conter no mínimo 8 caracteres, incluindo letra maiúscula, minúscula, número e caractere especial.">
+          
+      </div>
+
+
+      <button type="submit" class="btn-primary" style="width:100%">Cadastrar</button>
+
+    </form>
+
+    <div style="text-align:center; margin-top:14px;">
+      <span>Já tem uma conta?</span>
+      <a href="{{ url_for('login') }}" class="link-primary">Entrar</a>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+document.getElementById("telefone").addEventListener("input", function (e) {
+    let v = e.target.value.replace(/\D/g, ""); // remove tudo que não é número
+
+    if (v.length > 11) v = v.slice(0, 11); // limita a 11 dígitos
+
+    if (v.length <= 10) {
+        // Formato (11) 1234-5678
+        e.target.value = v.replace(/^(\d{2})(\d{4})(\d{0,4}).*/, "($1) $2-$3");
+    } else {
+        // Formato (11) 12345-6789
+        e.target.value = v.replace(/^(\d{2})(\d{5})(\d{0,4}).*/, "($1) $2-$3");
+    }
+});
+</script>
+
+{% endblock %}
