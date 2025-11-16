@@ -12,8 +12,9 @@ import os
 from sqlalchemy.orm import joinedload
 from werkzeug.utils import secure_filename
 import re
+from flask import Response
 
-# Imports locais
+
 from backend.config import Config
 from backend.models import db, Usuario, Cupcake, Pedido, PedidoCupcake, PedidoStatusLog
 
@@ -96,7 +97,7 @@ def login():
             session["usuario_id"] = usuario.id
             session["usuario_nome"] = usuario.nome
             session["usuario_email"] = usuario.email
-            session["is_admin"] = usuario.is_admin  # 👈 Adicionado aqui!
+            session["is_admin"] = usuario.is_admin  
 
             init_cart()
             flash("Login realizado com sucesso!", "success")
@@ -175,7 +176,7 @@ def adicionar_ao_carrinho(cupcake_id):
         quantidade = 1
 
     init_cart()
-    carrinho = session["carrinho"]  # dict com chaves string
+    carrinho = session["carrinho"]  
 
     key = str(cupcake_id)
     carrinho[key] = carrinho.get(key, 0) + quantidade
@@ -217,7 +218,7 @@ def diminuir_quantidade(cupcake_id):
 #route para remover item do carrinho
 
 @app.route("/remover_do_carrinho/<int:cupcake_id>", methods=["POST"])
-@login_required  # ✅ AGORA usa o seu, e não o do Flask-Login
+@login_required 
 def remover_do_carrinho(cupcake_id):
     init_cart()
     key = str(cupcake_id)
@@ -355,9 +356,7 @@ def finalizar_pedido():
 def pedido():
     user_id = session["usuario_id"]
 
-    # ======================================
     # 1) HISTÓRICO DE PEDIDOS FINALIZADOS
-    # ======================================
     pedidos = Pedido.query.filter_by(usuario_id=user_id, finalizado=True) \
         .order_by(Pedido.data_pedido.desc()).all()
 
@@ -384,9 +383,9 @@ def pedido():
             "avaliacao": p.avaliacao
         })
 
-    # ======================================
+
     # 2) PEDIDO EM ABERTO (finalizado=False)
-    # ======================================
+
     pedido_aberto = Pedido.query.filter_by(usuario_id=user_id, finalizado=False).first()
 
     pedido_itens = []
@@ -402,9 +401,9 @@ def pedido():
             })
             total += subtotal
 
-    # ======================================
+    
     # 3) RENDERIZAÇÃO FINAL
-    # ======================================
+  
     return render_template(
         "pedido.html",
         historico=historico,
@@ -673,9 +672,6 @@ def admin_dashboard():
         stats_status=stats_status
     )
 
-
-
-
 # ----------------- EXPORTAÇÃO EXCEL -----------------
 @app.route("/admin/export/excel")
 @login_required
@@ -704,7 +700,6 @@ def export_excel():
 
 
 # ----------------- EXPORTAÇÃO PDF -----------------
-from flask import Response
 
 @app.route("/admin/export/pdf")
 @login_required
@@ -758,9 +753,6 @@ def export_pdf():
 
 # ------------------ DETALHES DO PEDIDO ------------------
 
-
-
-
 @app.route("/admin/pedido/<int:pedido_id>")
 @admin_required
 def admin_pedido_detalhes(pedido_id):
@@ -787,9 +779,6 @@ def admin_pedido_detalhes(pedido_id):
         pedido=pedido,
         total=pedido.total
     )
-
-
-
 
 
 @app.route("/admin/pedido/<int:pedido_id>/delete", methods=["POST"])

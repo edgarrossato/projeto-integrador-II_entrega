@@ -116,20 +116,7 @@
               <td class="actions-cell">
                 <a href="{{ url_for('admin_pedido_detalhes', pedido_id=pedido.id) }}" class="btn-small">Detalhes</a>
 
-                <!--<form action="{{ url_for('alterar_status', pedido_id=pedido.id) }}" method="POST" style="display:inline;">
-                  <select name="status" class="combo-update-status">
-                    {% for s in ['Recebido','Em produção','Pronto','Entregue','Cancelado'] %}
-                      <option value="{{ s }}" {% if pedido.status == s %}selected{% endif %}>{{ s }}</option>
-                    {% endfor %}
-                  </select>
-                  <button class="btn-small">Atualizar</button>
-                </form>
-
-                <form action="{{ url_for('admin_pedido_delete', pedido_id=pedido.id) }}" method="POST"
-                      style="display:inline;"
-                      onsubmit="return confirm('Excluir pedido #{{ pedido.id }}?');">
-                  <button class="btn-small btn-danger">Excluir</button>
-                </form>-->
+                
               </td>
             </tr>
             {% else %}
